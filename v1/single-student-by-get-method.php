@@ -2,10 +2,8 @@
 //ini_set("display_errors", 1);
 // include headers
 header("Access-Control-Allow-Origin: *");
-// passing json data or data type while calling this api
-header("Content-type: application/json; charset=UTF-8");
 // data which we are getting inside request
-header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Methods: GET");
 // method type
 
 // include database.php
@@ -21,13 +19,13 @@ $connection = $db->connect();
 // create object for student
 $student = new Student($connection);
 
-if($_SERVER['REQUEST_METHOD'] === "POST"){
+if($_SERVER['REQUEST_METHOD'] === "GET"){
 
-   $param = json_decode(file_get_contents("php://input"));
+   $student_id = isset($_GET['id']) ? intval($_GET['id']) : "";
 
-   if(!empty($param->id)){
+   if(!empty($student_id)){
 
-     $student->id = $param->id;
+     $student->id = $student_id;
      $student_data = $student->get_single_student();
      //print_r($student_data);
      if(!empty($student_data)){

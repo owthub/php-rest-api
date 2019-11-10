@@ -6,6 +6,7 @@ class Student{
   public $name;
   public $email;
   public $mobile;
+  public $id;
 
   private $conn;
   private $table_name;
@@ -74,5 +75,55 @@ class Student{
 
       return $data->fetch_assoc();
   }
+
+  // update student information
+  public function update_student(){
+
+     // query
+     $update_query = "UPDATE tbl_students SET name = ?, email = ?, mobile = ? WHERE id = ?";
+
+     // prepare statement
+     $query_object = $this->conn->prepare($update_query);
+
+     //sanitizing inputs
+     $this->name = htmlspecialchars(strip_tags($this->name));
+     $this->email = htmlspecialchars(strip_tags($this->email));
+     $this->mobile = htmlspecialchars(strip_tags($this->mobile));
+     $this->id = htmlspecialchars(strip_tags($this->id));
+
+     // binding parameters with the query
+     $query_object->bind_param("sssi", $this->name, $this->email, $this->mobile, $this->id);
+
+     //execute query
+     if($query_object->execute()){
+       return true;
+     }
+     return false;
+  }
+
+  // delete student
+  public function delete_student(){
+
+    $delete_query = "DELETE from ".$this->table_name." WHERE id = ?";
+
+    // prepare $query
+    $delete_obj = $this->conn->prepare($delete_query);
+
+    //sanitize inputs
+    $this->id = htmlspecialchars(strip_tags($this->id));
+
+    // bind parameter
+    $delete_obj->bind_param("i", $this->id);
+
+    // executing query
+    if($delete_obj->execute()){
+
+      return true;
+    }
+
+    return false;
+  }
+
+
 }
  ?>
